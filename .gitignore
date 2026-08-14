@@ -14,3 +14,16 @@
 .cxx
 local.properties
 !/.idea/
+/.idea/AndroidProjectSystem.xml
+/.idea/compiler.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/deviceManager.xml
+/.idea/gradle.xml
+/.idea/markdown.xml
+/.idea/migrations.xml
+/.idea/misc.xml
+/.idea/planningMode.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/runConfigurations.xml
+/.idea/vcs.xml
+/.idea/.gitignore
