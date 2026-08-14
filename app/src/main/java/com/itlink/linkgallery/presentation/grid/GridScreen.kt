@@ -26,11 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.itlink.linkgallery.R
 import com.itlink.linkgallery.domain.model.ImageItem
 import com.itlink.linkgallery.presentation.common.NoInternetScreen
 import com.itlink.linkgallery.presentation.navigation.Screen
@@ -47,9 +51,15 @@ fun GridScreen(
     
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text("LinkGallery") },
+            title = { Text(stringResource(R.string.app_name)) },
             actions = {
-                IconButton(onClick = { viewModel.toggleTheme() }) {
+                val description = stringResource(R.string.cd_toggle_theme)
+                IconButton(
+                    onClick = { viewModel.toggleTheme() },
+                    modifier = Modifier.semantics { 
+                        contentDescription = description 
+                    }
+                ) {
                     Text(
                         text = if (uiState.isDarkMode) "☀️" else "🌙",
                         style = MaterialTheme.typography.titleMedium

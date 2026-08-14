@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.itlink.linkgallery.R
 import com.itlink.linkgallery.domain.model.ImageItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,21 +28,21 @@ fun FullscreenTopAppBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text("Preview") },
+        title = { Text(stringResource(R.string.preview_title)) },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
             }
         },
         actions = {
             IconButton(onClick = { onShareClick(currentItem) }) {
-                Icon(Icons.Default.Share, contentDescription = "Share")
+                Icon(Icons.Default.Share, contentDescription = stringResource(R.string.share))
             }
             IconButton(onClick = { onBrowserClick(currentItem) }) {
-                Icon(Icons.Default.Email, contentDescription = "Open")
+                Icon(Icons.Default.Email, contentDescription = stringResource(R.string.open_in_browser))
             }
             IconButton(onClick = { onRetryClick(currentItem) }) {
-                Icon(Icons.Default.Refresh, contentDescription = "Retry")
+                Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.retry_loading))
             }
         },
         modifier = modifier.fillMaxWidth()

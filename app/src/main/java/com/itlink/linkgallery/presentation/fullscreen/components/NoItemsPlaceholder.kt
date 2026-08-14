@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.itlink.linkgallery.R
 
 @Composable
 fun NoItemsPlaceholder(modifier: Modifier = Modifier) {
@@ -15,7 +17,7 @@ fun NoItemsPlaceholder(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No items",
+            text = stringResource(R.string.no_items),
             style = MaterialTheme.typography.bodyLarge
         )
     }

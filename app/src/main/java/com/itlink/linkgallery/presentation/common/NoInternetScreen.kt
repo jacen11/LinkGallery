@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.itlink.linkgallery.R
 
 @Composable
 fun NoInternetScreen(
@@ -39,20 +41,20 @@ fun NoInternetScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Нет подключения к интернету",
+            text = stringResource(R.string.no_internet_title),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Проверьте настройки сети и попробуйте еще раз",
+            text = stringResource(R.string.no_internet_description),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onRetry) {
-            Text("Повторить")
+            Text(stringResource(R.string.retry))
         }
     }
 }

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">LinkGallery</string>
+    <string name="no_internet_title">Нет подключения к интернету</string>
+    <string name="no_internet_description">Проверьте настройки сети и попробуйте еще раз</string>
+    <string name="retry">Повторить</string>
+    <string name="preview_title">Просмотр</string>
+    <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="retry_loading">Повторить загрузку</string>
+    <string name="no_items">Нет изображений</string>
+    <string name="cd_toggle_theme">Переключить тему</string>
 </resources>
