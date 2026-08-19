@@ -18,17 +18,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,15 +46,30 @@ fun CoachMark(
 ) {
     if (targetCoordinates == null || !targetCoordinates.isAttached) return
 
-    val bounds = targetCoordinates.boundsInRoot()
+    var coachMarkCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
+    
+    // Calculate target bounds relative to THIS composable's coordinate system
+    val targetBounds = remember(targetCoordinates, coachMarkCoordinates) {
+        if (coachMarkCoordinates != null && targetCoordinates.isAttached) {
+            coachMarkCoordinates!!.localBoundingBoxOf(targetCoordinates)
+        } else {
+            Rect.Zero
+        }
+    }
+
+    if (targetBounds == Rect.Zero) {
+        // Initial state to capture coordinates
+        Box(modifier = modifier.fillMaxSize().onGloballyPositioned { coachMarkCoordinates = it })
+        return
+    }
 
     // Pulsing animation for the highlight
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.15f,
+        targetValue = 1.12f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
+            animation = tween(1000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "pulseScale"
@@ -60,6 +78,7 @@ fun CoachMark(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .onGloballyPositioned { coachMarkCoordinates = it }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -68,11 +87,11 @@ fun CoachMark(
     ) {
         // Overlay with a hole
         Canvas(modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.99f)) {
-            drawRect(color = Color.Black.copy(alpha = 0.8f))
+            drawRect(color = Color.Black.copy(alpha = 0.85f))
             drawRoundRect(
                 color = Color.Transparent,
-                topLeft = Offset(bounds.left - 4.dp.toPx(), bounds.top - 4.dp.toPx()),
-                size = Size(bounds.width + 8.dp.toPx(), bounds.height + 8.dp.toPx()),
+                topLeft = Offset(targetBounds.left - 4.dp.toPx(), targetBounds.top - 4.dp.toPx()),
+                size = Size(targetBounds.width + 8.dp.toPx(), targetBounds.height + 8.dp.toPx()),
                 cornerRadius = CornerRadius(12.dp.toPx(), 12.dp.toPx()),
                 blendMode = BlendMode.Clear
             )
@@ -80,14 +99,14 @@ fun CoachMark(
 
         // Animated border around the target
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val inflatedWidth = (bounds.width + 8.dp.toPx()) * pulseScale
-            val inflatedHeight = (bounds.height + 8.dp.toPx()) * pulseScale
-            val diffX = (inflatedWidth - (bounds.width + 8.dp.toPx())) / 2
-            val diffY = (inflatedHeight - (bounds.height + 8.dp.toPx())) / 2
+            val inflatedWidth = (targetBounds.width + 8.dp.toPx()) * pulseScale
+            val inflatedHeight = (targetBounds.height + 8.dp.toPx()) * pulseScale
+            val diffX = (inflatedWidth - (targetBounds.width + 8.dp.toPx())) / 2
+            val diffY = (inflatedHeight - (targetBounds.height + 8.dp.toPx())) / 2
 
             drawRoundRect(
                 color = Color.White,
-                topLeft = Offset(bounds.left - 4.dp.toPx() - diffX, bounds.top - 4.dp.toPx() - diffY),
+                topLeft = Offset(targetBounds.left - 4.dp.toPx() - diffX, targetBounds.top - 4.dp.toPx() - diffY),
                 size = Size(inflatedWidth, inflatedHeight),
                 cornerRadius = CornerRadius(12.dp.toPx(), 12.dp.toPx()),
                 style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx())
@@ -100,12 +119,12 @@ fun CoachMark(
                 .fillMaxSize()
                 .padding(32.dp)
         ) {
-            val isTargetInTopHalf = bounds.top < 800 // Simple heuristic
+            val isTargetInTopHalf = targetBounds.top < 1000 // Simplified check
             
             Column(
                 modifier = Modifier
                     .align(if (isTargetInTopHalf) Alignment.Center else Alignment.TopCenter)
-                    .padding(top = if (isTargetInTopHalf) 120.dp else 60.dp),
+                    .padding(top = if (isTargetInTopHalf) 140.dp else 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -116,10 +135,10 @@ fun CoachMark(
                     textAlign = TextAlign.Center,
                     lineHeight = 28.sp
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = "Нажмите в любое место, чтобы продолжить",
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = Color.White.copy(alpha = 0.6f),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center
                 )

@@ -117,11 +117,13 @@ fun GridScreen(
                 OnboardingStep.GridItem -> "Нажмите на любое изображение, чтобы открыть его в полноэкранном режиме."
             }
 
-            CoachMark(
-                targetCoordinates = target,
-                text = text,
-                onNext = { viewModel.nextOnboardingStep() }
-            )
+            if (target != null) {
+                CoachMark(
+                    targetCoordinates = target,
+                    text = text,
+                    onNext = { viewModel.nextOnboardingStep() }
+                )
+            }
         }
     }
 }
@@ -149,7 +151,9 @@ fun ImageGrid(
                 item = item,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedVisibilityScope = animatedVisibilityScope,
-                modifier = if (index == 0) Modifier.onGloballyPositioned(onFirstItemPositioned) else Modifier,
+                modifier = if (index == 0) Modifier.onGloballyPositioned {
+                    if (it.isAttached) onFirstItemPositioned(it)
+                } else Modifier,
                 onClick = { onItemClick(item) }
             )
         }
