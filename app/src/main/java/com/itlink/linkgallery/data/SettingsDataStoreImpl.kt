@@ -14,6 +14,7 @@ private val Context.dataStore by preferencesDataStore(name = "settings")
 @Singleton
 class SettingsDataStoreImpl @Inject constructor(private val context: Context) : SettingsDataStore {
     private val darkModeKey = booleanPreferencesKey("dark_mode")
+    private val onboardingKey = booleanPreferencesKey("onboarding_completed")
 
     override val isDarkMode: Flow<Boolean> = context.dataStore.data.map { pref ->
         pref[darkModeKey] ?: false
@@ -21,5 +22,13 @@ class SettingsDataStoreImpl @Inject constructor(private val context: Context) : 
 
     override suspend fun setDarkMode(enabled: Boolean) {
         context.dataStore.edit { it[darkModeKey] = enabled }
+    }
+
+    override val isOnboardingCompleted: Flow<Boolean> = context.dataStore.data.map { pref ->
+        pref[onboardingKey] ?: false
+    }
+
+    override suspend fun setOnboardingCompleted(completed: Boolean) {
+        context.dataStore.edit { it[onboardingKey] = completed }
     }
 }

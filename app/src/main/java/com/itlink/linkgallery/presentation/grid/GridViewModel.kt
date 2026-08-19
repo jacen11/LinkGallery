@@ -13,6 +13,7 @@ import com.itlink.linkgallery.domain.usecase.RetryImageUseCase
 import com.itlink.linkgallery.presentation.grid.GridReducer.darkMode
 import com.itlink.linkgallery.presentation.grid.GridReducer.idle
 import com.itlink.linkgallery.presentation.grid.GridReducer.loading
+import com.itlink.linkgallery.presentation.grid.GridReducer.onboarding
 import com.itlink.linkgallery.presentation.grid.GridReducer.online
 import com.itlink.linkgallery.presentation.grid.GridReducer.refreshing
 import com.itlink.linkgallery.presentation.grid.GridReducer.showContent
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,8 +33,14 @@ data class GridUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val isDarkMode: Boolean = false,
-    val isOnline: Boolean = true
+    val isOnline: Boolean = true,
+    val onboardingStep: OnboardingStep? = null
 )
+
+sealed class OnboardingStep {
+    data object ThemeToggle : OnboardingStep()
+    data object GridItem : OnboardingStep()
+}
 
 object GridReducer {
     fun GridUiState.loading() = copy(isLoading = true)
@@ -41,6 +49,7 @@ object GridReducer {
     fun GridUiState.idle(items: List<ImageItem>) = copy(items = items, isLoading = false, isRefreshing = false)
     fun GridUiState.darkMode(enabled: Boolean) = copy(isDarkMode = enabled)
     fun GridUiState.online(isOnline: Boolean) = copy(isOnline = isOnline)
+    fun GridUiState.onboarding(step: OnboardingStep?) = copy(onboardingStep = step)
 }
 
 @HiltViewModel
@@ -80,6 +89,24 @@ class GridViewModel @Inject constructor(
                 _uiState.update { it.darkMode(enabled) }
             }
         }
+        viewModelScope.launch {
+            val completed = dataStore.isOnboardingCompleted.first()
+            if (!completed) {
+                _uiState.update { it.onboarding(OnboardingStep.ThemeToggle) }
+            }
+        }
+    }
+
+    fun nextOnboardingStep() {
+        val next = when (_uiState.value.onboardingStep) {
+            OnboardingStep.ThemeToggle -> OnboardingStep.GridItem
+            OnboardingStep.GridItem -> {
+                viewModelScope.launch { dataStore.setOnboardingCompleted(true) }
+                null
+            }
+            null -> null
+        }
+        _uiState.update { it.onboarding(next) }
     }
 
     fun toggleTheme() {

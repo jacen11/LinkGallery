@@ -41,9 +41,10 @@ class GridViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        
+
         every { monitor.isAvailable } returns MutableStateFlow(true)
         every { dataStore.isDarkMode } returns MutableStateFlow(false)
+        every { dataStore.isOnboardingCompleted } returns flowOf(true)
         every { getImagesUseCase() } returns flowOf(emptyList())
     }
 
@@ -77,7 +78,7 @@ class GridViewModelTest {
     fun `toggleTheme calls dataStore setDarkMode`() = runTest {
         val isDarkModeFlow = MutableStateFlow(false)
         every { dataStore.isDarkMode } returns isDarkModeFlow
-        
+
         initViewModel()
 
         viewModel.toggleTheme()

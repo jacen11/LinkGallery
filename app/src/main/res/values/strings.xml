@@ -10,4 +10,15 @@
     <string name="retry_loading">Повторить загрузку</string>
     <string name="no_items">Нет изображений</string>
     <string name="cd_toggle_theme">Переключить тему</string>
+    <string name="onboarding_welcome_title">Добро пожаловать в LinkGallery</string>
+    <string name="onboarding_welcome_desc">Ваша персональная галерея изображений из сети.</string>
+    <string name="onboarding_grid_title">Главный экран</string>
+    <string name="onboarding_grid_desc">Просматривайте все изображения в удобной сетке. Нажмите на картинку для просмотра в полный размер.</string>
+    <string name="onboarding_viewer_title">Просмотр и Zoom</string>
+    <string name="onboarding_viewer_desc">Используйте жесты для приближения и листайте изображения свайпами.</string>
+    <string name="onboarding_sync_title">Всегда актуально</string>
+    <string name="onboarding_sync_desc">Приложение само скачивает новые ссылки и кэширует их для работы без интернета.</string>
+    <string name="onboarding_start">Начать работу</string>
+    <string name="onboarding_next">Далее</string>
+    <string name="onboarding_skip">Пропустить</string>
 </resources>
